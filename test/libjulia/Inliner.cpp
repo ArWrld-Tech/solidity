@@ -167,32 +167,32 @@ BOOST_AUTO_TEST_CASE(complex_with_evm)
 BOOST_AUTO_TEST_CASE(double_calls)
 {
 	BOOST_CHECK_EQUAL(
-		inlineFunctions(R"({
-			function f(a) -> x { x := add(a, a) }
-			function g(b, c) -> y { y := mul(mload(c), f(b)) }
-			let y := g(calldatasize(), 7)
-		})", false),
-		format(R"({
-			function f(a) -> x { x := add(a, a) }
-			function g(b, c) -> y { y := mul(mload(c), add(b, b)) }
-			let y_1 := mul(mload(7), add(calldatasize(), calldatasize()))
-		})", false)
+		inlineFunctions("{"
+			"function f(a) -> x { x := add(a, a) }"
+			"function g(b, c) -> y { y := mul(mload(c), f(b)) }"
+			"let y := g(calldatasize(), 7)"
+		"}", false),
+		format("{"
+			"function f(a) -> x { x := add(a, a) }"
+			"function g(b, c) -> y { y := mul(mload(c), add(b, b)) }"
+			"let y_1 := mul(mload(7), add(calldatasize(), calldatasize()))"
+		"}", false)
 	);
 }
 
 BOOST_AUTO_TEST_CASE(double_recursive_calls)
 {
 	BOOST_CHECK_EQUAL(
-		inlineFunctions(R"({
-			function f(a, r) -> x { x := g(a, g(r, r)) }
-			function g(b, s) -> y { y := f(b, f(s, s)) }
-			let y := g(calldatasize(), 7)
-		})", false),
-		format(R"({
-			function f(a, r) -> x { x := g(a, f(r, f(r, r))) }
-			function g(b, s) -> y { y := f(b, g(s, f(s, f(s, s))))}
-			let y_1 := f(calldatasize(), g(7, f(7, f(7, 7))))
-		})", false)
+		inlineFunctions("{"
+			"function f(a, r) -> x { x := g(a, g(r, r)) }"
+			"function g(b, s) -> y { y := f(b, f(s, s)) }"
+			"let y := g(calldatasize(), 7)"
+		"}", false),
+		format("{"
+			"function f(a, r) -> x { x := g(a, f(r, f(r, r))) }"
+			"function g(b, s) -> y { y := f(b, g(s, f(s, f(s, s))))}"
+			"let y_1 := f(calldatasize(), g(7, f(7, f(7, 7))))"
+		"}", false)
 	);
 }
 
