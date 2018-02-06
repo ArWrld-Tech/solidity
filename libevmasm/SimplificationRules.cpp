@@ -64,16 +64,6 @@ void Rules::addRule(std::pair<Pattern, std::function<Pattern()> > const& _rule)
 	m_rules[byte(_rule.first.instruction())].push_back(_rule);
 }
 
-template <class S> S divWorkaround(S const& _a, S const& _b)
-{
-	return (S)(bigint(_a) / bigint(_b));
-}
-
-template <class S> S modWorkaround(S const& _a, S const& _b)
-{
-	return (S)(bigint(_a) % bigint(_b));
-}
-
 Rules::Rules()
 {
 	// Multiple occurences of one of these inside one rule must match the same equivalence class.
